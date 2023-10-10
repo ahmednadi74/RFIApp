@@ -1,0 +1,27 @@
+﻿
+@*
+    For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@model Guid
+@{
+    ViewData["Title"] = "CreateSupplier";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<h3 class="fixed">
+    Supplier Created Successfully With ID :
+    <small class="absolute">
+        <span style="color: blue; font-weight: bold;">@Model</span>
+    </small>
+</h3>
+    <br /><br />
+    <div class="row">
+
+      @*  <div class="col-6">
+            <p>The supplier ID is: <span style="color: blue; font-weight: bold;">@Model</span></p>
+        </div>*@
+
+            <button type="button" class="btn btn-secondary">
+                <a style="color:white" asp-controller="Admin" asp-action="Index">Return to List</a>
+            </button>
+    </div>

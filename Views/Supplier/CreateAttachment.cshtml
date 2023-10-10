@@ -1,0 +1,16 @@
+﻿@model RFIApp.ViewModel.CreateAttachmentModel
+@{
+    ViewData["Title"] = "CreateAttachment";
+}
+<form asp-action="CreateAttachment" enctype="multipart/form-data" method="post">
+
+    <div class="form-group">
+        <input type="hidden" asp-for="SupplierID" />
+        <label for="CreateAttachmentModel.FileAttachmentPath">File Attachment</label>
+        <input type="file" class="form-control" id="FileAttachmentPath" name="FileAttachmentPath" required>
+    </div>
+    <br />
+    <div style="text-align:center">
+    <button type="submit" class="btn btn-primary">Upload</button>
+    </div>
+</form>

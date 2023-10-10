@@ -1,0 +1,822 @@
+@model RFIApp.ViewModel.SupplierViewModel
+@{
+    ViewData["Title"] = "SUPPLIER REQUEST FOR INFORMATION FORM";
+}
+
+<form asp-action="Edit" id="create-form" enctype="multipart/form-data" method="post">
+    <div class="form-group row g-3">
+        <h2 class="fileds-header">Supplier Information</h2>
+        <input type="hidden" asp-for="SupplierID" />
+        <input type="hidden" asp-for="IsLocked" />
+        <div class="Supplier-details">
+            <div class="name-container">
+
+                <div class="col-md-4">
+                    <select asp-for="TypeOfBusiness" asp-items="Model.BusinessTypes" class="form-select">
+                        <option value="0" selected="selected" disabled>Type Of Business</option>
+                    </select>
+                    <span id="typeOfBusinessError" style="display:none">&nbsp;&nbsp;&nbsp;&nbsp;</span>
+
+                </div>
+
+                <div class="form-floating col-md-4">
+                    <input asp-for="LegalName" class="form-control" required data-rule-required="true" data-msg-required="Legal Name is required." placeholder="name@example.com">
+                    <label for="floatingInput">Legal Name</label>
+                </div>
+                <div class="form-floating col-md-4">
+                    <input asp-for="TradingName" class="form-control" required data-rule-required="true" data-msg-required="Trading Name is required." placeholder="Trading Name">
+                    <label for="floatingInput">Trading Name</label>
+                </div>
+            </div>
+            <div class="Post-container">
+
+                <div class="form-floating col-md-4">
+                    <input asp-for="CompanyAddress" class="form-control" required data-rule-required="true" data-msg-required="Company Address is required." placeholder="Company Address">
+                    <label for="floatingInput">Company Address</label>
+                </div>
+                <div class="form-floating col-md-4">
+                    <input asp-for="PostalAddress" class="form-control" required data-rule-required="true" data-msg-required="Postal Address is required." placeholder="Postal Address">
+                    <label for="floatingInput">Postal Address</label>
+                </div>
+                <div class="form-floating col-md-4">
+                    <input asp-for="PostCode" class="form-control" required data-rule-required="true" data-msg-required="Post Code is required." placeholder="eg 12345 or 12345-6789">
+                    <label for="floatingInput">Post Code</label>
+
+                </div>
+            </div>
+            <div class="PhoneFax-container">
+                <div class="form-floating col-md-4">
+                    <input asp-for="TelephoneNumber" name="TelephoneNumber" class="form-control"  data-rule-required="true" data-msg-required="Phone Number is required." placeholder="eg:00201234567891">
+                    <label for="floatingInput"> Telephone Number</label>
+                </div>
+
+                <div class="form-floating col-md-4">
+                    <input asp-for="FaxNumber" class="form-control"  placeholder="eg:+14155552671">
+                    <label for="floatingInput"> Fax Number</label>
+
+                </div>
+                <div class="form-floating col-md-4">
+                    <input asp-for="WebAddress" class="form-control" required data-rule-required="true" data-msg-required="web Address is required." placeholder="https://www.google.com">
+                    <label for="floatingInput">Web Address</label>
+
+                </div>
+            </div>
+            <div class="Employee-container">
+                <div class="form-floating col-md-4">
+                    <input asp-for="NoOfEmployees" placeholder="NoOfEmployees" class="form-control" type="number" required data-rule-required="true" data-msg-required="Number Of Employee is required." />
+                    <label for="floatingInput">No of Employees</label>
+                </div>
+                <div class="form-floating CustomCheck col-md-4">
+                    <div class="form-check">
+                        <input type="checkbox" asp-for="EmployeesAreSubscribedToSocialSecurity" class="form-check-input" id="flexCheckDefault">
+                        <span asp-validation-for="EmployeesAreSubscribedToSocialSecurity" class="text-danger"></span>
+                        <span><label asp-for="EmployeesAreSubscribedToSocialSecurity" class="control-label"></label></span>
+                    </div>
+                </div>
+@*                <div class="form-floating col-md-4">
+                    <div class="row">
+                        <div class="column" style="background-color:#aaa;">
+                            <label class="form-label">Attachment</label>
+
+                        </div>
+                        <div class="column" style="background-color:#bbb;">
+                            <a asp-controller="Supplier" asp-action="Download" asp-route-filePath="@Model.FileAttachmentPath" asp-route-fileName="@Model.FileAttachmentName">@Model.FileAttachmentName</a>
+
+                        </div>
+                        <div class="column" style="background-color:#ccc;">
+                            <a href="@Url.Action("CreateAttachment", "Supplier", new { id = Model.SupplierID })" class="btn">Upload</a>
+
+                        </div>
+                    </div>
+                </div>
+*@               
+        <div class="form-floating col-md-4">
+                    <div>
+                       
+                            <div class="col-md-6">
+                            <a href="@Url.Action("CreateAttachment", "Supplier", new { id = Model.SupplierID })" class="btn btn-primary">Upload Attachment</a>
+                            <span class="customDownload">
+                                <a asp-controller="Supplier" asp-action="Download" asp-route-filePath="@Model.FileAttachmentPath" asp-route-fileName="@Model.FileAttachmentName">@Model.FileAttachmentName</a>
+                        </span>
+                           </div>   
+                         
+                    </div>
+                </div>
+          </div>
+        </div>
+    </div>
+    <hr />
+
+    @* ContactModel*@
+    @if (Model.createContactModels != null)
+    {
+
+        <div class="form-group row g-3">
+            <h2 class="fileds-header"> Contact Details </h2>
+            <div id="contact-details">
+                @for (int i = 0; i < Model.createContactModels.Count; i++)
+                {
+                    <div class="contact-record" id="contact-record-@i">
+                        <div class="ContactTypeName-container">
+                            <input type="hidden" asp-for="createContactModels[i].ContactID" />
+
+                            <div class="col-md-3">
+
+                                <select asp-for="createContactModels[i].ContactType" asp-items="Model.ContactTypeOptions" class="form-select">
+                                    <option value="0" selected="selected" disabled>Contact Type</option>
+
+                                </select>
+                                <span id="typeOfBusinessError" style="display:none">&nbsp;&nbsp;&nbsp;&nbsp;</span>
+                            </div>
+                            <div class="form-floating col-md-3">
+                                <input asp-for="createContactModels[i].ContactName" placeholder="ContactName" class="form-control" required data-rule-required="true" data-msg-required="Contact name is required." />
+                                <label asp-for="createContactModels[i].ContactName"></label>
+                            </div>
+                            <div class="form-floating col-md-3">
+
+                                @*                                <input asp-for="createContactModels[i].ContactTelNo" Id="createContactModels[i].ContactTelNo" class="form-control" placeholder="contact tel eg: +1-202-555-0143" required data-rule-required="true" data-msg-required="Contact Telephone is required." data-rule-regex="^0\d{13}$" data-msg-regex="Please enter a valid mobile phone number in the format 0xxxxxxxxxxx." />
+                        *@
+                                <input asp-for="createContactModels[i].ContactTelNo" Id="createContactModels[i].ContactTelNo" class="form-control" placeholder="contact tel eg: +1-202-555-0143" required data-rule-required="true" data-msg-required="Contact Telephone is required." />
+
+                                <label asp-for="createContactModels[i].ContactTelNo"></label>
+                            </div>
+                            <div class="form-floating col-md-3">
+
+                                <input asp-for="createContactModels[i].EmailAddress" class="form-control" placeholder="Email eg: name@example.com" required data-rule-required="true" data-msg-required="Email is required." data-rule-email="true" data-msg-email="Please enter a valid email address." />
+                                <label asp-for="createContactModels[i].EmailAddress"></label>
+                            </div>
+                            <input type="hidden" asp-for="createContactModels[i].IsDeleted">
+                            <div class="align-self-center">
+                                <div class="text-center">
+                                    <i class="fa fa-trash-o delete-contact" style="font-size:35px;color:red" id="@($"delete-contact-{i}")" data-contact-id="@Model.createContactModels[i].ContactID" data-contact-index="@i"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+            <div class="button-container">
+                <button type="button" onclick="addContactRecord()" class="button-name btn btn-primary custom-btn">Add New Contact</button>
+            </div>
+        </div>
+    }
+    <hr />
+
+    <!-- Bank details, contact models, and production info will require a different approach (like dynamic forms or a fixed number of inputs) since they are lists of objects. For simplicity, here's how you would create input fields for one object from each list -->
+    @* Bank details *@
+    @if (Model.createBankDetails != null)
+    {
+
+        <div class="form-group row g-3">
+            <h2 class="fileds-header">Bank Details</h2>
+            <div id="bank-details">
+                @for (int i = 0; i < Model.createBankDetails.Count; i++)
+                {
+                    <div class="bank-detail-record" id="bank-detail-record-@i">
+                        <div class="name-container">
+                            <input type="hidden" asp-for="createBankDetails[i].BankDetailsID" />
+
+                            <div class="form-floating col-md-3">
+                                <input asp-for="createBankDetails[i].BankName" placeholder="BankName" id="floatingInput" class="form-control" required data-rule-required="true" data-msg-required="Bank Name is required." />
+                                <label for="floatingInput">Bank Name</label>
+                            </div>
+                            <div class="form-floating col-md-3">
+                                <input asp-for="createBankDetails[i].BankAddress" placeholder="BankAddress" class="form-control" required data-rule-required="true" data-msg-required="Bank Address is required." />
+                                <label asp-for="createBankDetails[i].BankAddress"></label>
+
+                            </div>
+                            <div class="form-floating col-md-3">
+                                <input asp-for="createBankDetails[i].SwiftBIC" placeholder="Swift(BIC)" class="form-control" required data-rule-required="true" data-msg-required="Swift(BIC) is required." />
+                                <label asp-for="createBankDetails[i].SwiftBIC"></label>
+                            </div>
+                            <div class="form-floating col-md-3">
+                                <input asp-for="createBankDetails[i].PaymentTerm" class="form-control" placeholder="PaymentTerm" required data-rule-required="true" data-msg-required="Payment Term is required." />
+                                <label asp-for="createBankDetails[i].PaymentTerm"></label>
+                            </div>
+
+                        </div>
+                        <div class="BankAddressAccountNoIban-container">
+                            <div class="form-floating col-md-3">
+                                <input asp-for="createBankDetails[i].BeneficiaryName" placeholder="BeneficiaryName" class="form-control" required data-rule-required="true" data-msg-required="Beneficiary name is required." />
+                                <label for="floatingInput" class="d-none d-md-block">Beneficiary Name</label>
+                                <label for="floatingInput" class="d-block d-md-none">Beneficiary</label>
+
+
+                            </div>
+                            <div class="form-floating col-md-3">
+
+                                <input asp-for="createBankDetails[i].BankAccountNo" placeholder="BankAccountNo" class="form-control" required data-rule-required="true" data-msg-required="Bank Account Number is required." />
+                                <label asp-for="createBankDetails[i].BankAccountNo"></label>
+                            </div>
+                            <div class="form-floating col-md-3">
+                                <input asp-for="createBankDetails[i].AccountCurrency" placeholder="AccountCurrency" class="form-control" required data-rule-required="true" data-msg-required="Account Currency is required." />
+                                <label asp-for="createBankDetails[i].AccountCurrency"></label>
+
+                            </div>
+
+                            <div class="form-floating col-md-3">
+                                <input asp-for="createBankDetails[i].IBAN" placeholder="IBAN" class="form-control" required data-rule-required="true" data-msg-required="IBAN is required." />
+                                <label asp-for="createBankDetails[i].IBAN"></label>
+                            </div>
+                            <input type="hidden" asp-for="createBankDetails[i].IsDeleted">
+                            <div class="align-self-center">
+                                <div class="text-center">
+                                    <i class="fa fa-trash-o delete-bank" style="font-size:35px;color:red" id="@($"delete-bank-{i}")" data-bank-id="@Model.createBankDetails[i].BankDetailsID" data-bank-index="@i"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+            <div class="button-container">
+                <button type="button" onclick="addBankDetailRecord()" id="addNewContactButton" class="button-name btn btn-primary custom-btn">Add New Bank Detail</button>
+
+            </div>
+
+
+        </div>
+        <hr />
+
+    }
+    @* Production information *@
+    @if (Model.createProductrion != null)
+    {
+        <div class="form-group row g-3">
+            <h2 class="fileds-header"> Production information</h2>
+            <div id="Production-details">
+                @for (int i = 0; i < Model.createProductrion.Count; i++)
+                {
+                    <div class="Production-record" id="Production-record-@i">
+                        <div class="Itemcapacity-container">
+                            <input type="hidden" asp-for="createProductrion[i].ProductionInformationID" />
+                            <div class="form-floating col-md-4">
+                                <input asp-for="createProductrion[i].Item" placeholder="ItemName" class="form-control" required data-rule-required="true" data-msg-required="Item is required." />
+                                <label for="floatingInput">Item</label>
+                            </div>
+                            <div class="form-floating col-md-4">
+                                <input asp-for="createProductrion[i].ProductionCapacity" placeholder="ProductionCapacity" class="form-control" type="number" required data-rule-required="true" data-msg-required="Production Capacity  is required." />
+                                <label for="floatingInput" class="d-none d-md-block">Production Capacity</label>
+                                <label for="floatingInput" id="CustomLabel" class="d-block d-md-none">Prod. Cap.</label>
+
+                            </div>
+                            <div class="form-floating col-md-4">
+                                <input asp-for="createProductrion[i].ExportCapacity" placeholder="ExportCapacity" class="form-control" type="number" required data-rule-required="true" data-msg-required="Export Capacity is required." />
+                                <label for="floatingInput" class="d-none d-md-block">Export Capacity</label>
+                                <label for="floatingInput" id="CustomLabel" class="d-block d-md-none">Export. Cap.</label>
+                            </div>
+                            <input type="hidden" asp-for="createProductrion[i].IsDeleted">
+                            <div class="align-self-center">
+                                <div class="text-center">
+                                    <i class="fa fa-trash-o delete-production" style="font-size:35px;color:red" id="@($"delete-production-{i}")" data-production-id="@Model.createProductrion[i].ProductionInformationID" data-production-index="@i"></i>
+                                </div>
+                            </div>
+                            @*
+                    <div class="form-floating">
+                    <input asp-for="createProductrion[i].NoOfEmployees" placeholder="NoOfEmployees" value="" class="form-control" type="number" required data-rule-required="true" data-msg-required="Number Of Employee is required." />
+                    <label for="floatingInput" class="d-none d-md-block">No of Employees</label>
+                    <label for="floatingInput" id="CustomLabel" class="d-block d-md-none">#Emplos</label>
+
+                    </div>
+                    <div class="form-floating CustomCheck">
+                    <span><label asp-for="createProductrion[i].EmployeesAreSubscribedToSocialSecurity" class="control-label"></label></span>
+                    <div class="form-check">
+                    <input type="checkbox" asp-for="createProductrion[i].EmployeesAreSubscribedToSocialSecurity" value="" class="form-check-input" id="flexCheckDefault">
+                    <span asp-validation-for="createProductrion[i].EmployeesAreSubscribedToSocialSecurity" class="text-danger"></span>
+                    </div>
+                    </div>*@
+                        </div>
+                    </div>
+                }
+            </div>
+            <div class="button-container">
+                <button type="button" class="btn btn-primary custom-btn" onclick="addProductionRecord()">Add New Item</button>
+            </div>
+        </div>
+        <hr />
+    }
+    <button type="submit" class="custom-submit" id="submitButtonId">Submit</button>
+</form>
+@*<form asp-action="CreateAttachment" enctype="multipart/form-data" method="post">
+    <div class="form-group">
+        <label for="FileAttachmentPath">File Attachment</label>
+        <input type="file" class="form-control" id="FileAttachmentPath" name="FileAttachmentPath" required>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Submit</button>
+</form>*@
+<div class="modal fade" id="deleteContactModal" tabindex="-1" aria-labelledby="deleteContactModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteContactModalLabel">Delete Contact</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to delete this contact?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-danger" id="confirmDeleteContactButton">Delete</button>
+            </div>
+
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="deleteBankDetailModal" tabindex="-1" aria-labelledby="deleteBankDetailModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteBankDetailModalLabel">Delete Bank Detail</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to delete this bank detail?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-danger" id="confirmDeleteBankDetailButton">Delete</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="deleteProductionDetailModal" tabindex="-1" aria-labelledby="deleteProductionDetailModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteProductionDetailModalLabel">Delete Production Detail</h5>
+                <button type="button" class="btn-close"  data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to delete this production detail?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-danger" id="confirmDeleteProductionDetailButton">Delete</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@if (ViewBag.Message != null)
+{
+    <script type="text/javascript">
+        window.onload = function () {
+
+            alert("@ViewBag.Message");
+            document.getElementById("txtName").value = "@ViewBag.Message";
+        };
+    </script>
+}
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.3/jquery.validate.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/3.2.12/jquery.validate.unobtrusive.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.3/jquery.validate.min.js"></script>
+    <script>
+
+        $(document).ready(function () {
+            // Custom validation method for no white space
+            $.validator.addMethod("noSpace", function (value, element) {
+                return this.optional(element) || !/^\s/.test(value);
+            }, "White space is not allowed");
+
+            // Add rule to class
+            $.validator.addClassRules("form-control", {
+                noSpace: true
+            });
+
+            //$.validator.addMethod("phoneNumber", function (value, element) {
+            //    return this.optional(element) || /^\+?\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}$/.test(value);
+            //}, "Invalid number. eg: +1-202-555-0143");
+
+            //$.validator.addMethod("faxNumber", function (value, element) {
+            //    return this.optional(element) || /^\+\d{11}$/.test(value);
+            //}, "Invalid Fax number. eg +19075551234");
+            // Add rule for ContactType dropdown
+            $.validator.addMethod("contactType", function (value, element) {
+                return this.optional(element) || value !== "0";
+            }, "Please select a contact type.");
+            //$.validator.addMethod("SwiftBIC", function (value, element) {
+            //    return this.optional(element) || /^[A-Z]{4}[A-Z0-9]{2}[A-Z0-9]{2}([A-Z0-9]{3})?$/.test(value);
+            //},
+               // "Invalid Swift(BIC)format.eg:BMISEGFAXXX");
+            //$.validator.addMethod("BankAccountNo", function (value, element) {
+            //    return this.optional(element) || /^[0-9]{9,18})?$/.test(value);
+            //}, "Invalid BankAccountNo format. eg: 635802010014976");
+            $.validator.addMethod("BankAccountNo", function (value, element) {
+                return this.optional(element) || /^[0-9]{9,25}$/.test(value);
+            }, " must be 9-25 digits.");
+
+            // Apply the validator to your form
+            $("#create-form").validate({
+                errorClass: "text-danger",
+                validClass: "valid",
+                errorElement: "span",
+                rules: {
+                    TelephoneNumber: {
+                        required: true,
+                    },
+                    //FaxNumber: {
+                    //    required: true,
+                    //    faxNumber: true
+                    //},
+                    WebAddress: {
+                        required: true,
+                        url: true
+                    },
+                    TypeOfBusiness: {
+                        required: true,
+                    },
+                   
+                },
+                messages:
+                {
+                    TypeOfBusiness:
+                    {
+                        required: "Please select a type of business."
+                    }
+                    ,
+                    TelephoneNumber:
+                    {
+                        required: "Phone Number is required."
+                    },
+                    FaxNumber:
+                    {
+                        required: "Fax Number is required."
+                    },
+                    WebAddress:
+                    {
+                        required: "Web Address is required.",
+                        url: "Invalid URL.eg:https://www.google.com"
+                    }
+
+                }
+            });
+            // apply the rule to all required fields in #create-form
+            $("#create-form :input[required]").each(function () {
+                $(this).rules("add", {
+                    noSpace: true
+                });
+            });
+            //$("[name^='createBankDetails'][name$='SwiftBIC']").each(function () {
+            //    $(this).rules("add", {
+            //        required: true,
+            //        SwiftBIC: true,
+            //        messages: {
+            //            required: "Swift(BIC) is required.",
+            //            SwiftBIC: "Invalid Swift(BIC)format.eg:BMISEGFAXXX"
+            //        }
+            //    });
+            //});
+            $("[name^='createBankDetails'][name$='BankAccountNo']").each(function () {
+                $(this).rules("add", {
+                    required: true,
+                    BankAccountNo: true,
+                    messages: {
+                        required: "Bank Account Number is required.",
+                        BankAccountNo: "must be 9-25 digits."
+                    }
+                });
+            });
+
+            $("[name^='createContactModels'][name$='ContactType']").each(function () {
+                $(this).rules("add", {
+                    required: true,
+                    contactType: true,
+                    messages: {
+                        required: "Please Select Contact type."
+                    }
+                });
+            });
+
+            // Add email rule to each dynamically created EmailAddress input
+            $("[name^='createContactModels'][name$='EmailAddress']").each(function () {
+                $(this).rules("add", {
+                    required: true,
+                    email: true,
+                    messages: {
+                        required: "Email is required.",
+                        email: "Ivalid email.eg : name@example.com"
+                    }
+                });
+            });
+
+              /*$("form").validate()*/;
+
+            $('form').on('submit', function (e) {
+                if ($(this).valid()) {
+                    e.preventDefault();
+                    var form = $(this);
+                    $.ajax({
+                        type: form.attr('method'),
+                        url: form.attr('action'),
+                        data: form.serialize(),
+                        success: function (data) {
+                            if (data.success) {
+                                alert('Data submitted successfully!');
+                            }
+                            else if (data.message)
+                            {
+                                alert(data.message)
+                            }
+                            else {
+                                alert('Data submitted Is Not Valid!');
+                            }
+                        }
+                    });
+                }
+                else {
+                    alert('Data submitted Is Not Valid!');
+                }
+            });
+        });
+
+
+        //var contactTypeOptions = '@Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.ContactTypeOptions))';
+        var contactTypeOptions = JSON.parse('@Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.ContactTypeOptions))');
+        var currentIndex = @Model.createContactModels.Count;
+        var currentProductionIndex = @Model.createProductrion.Count;
+        var currentBankIndex = @Model.createBankDetails.Count;
+
+        function addBankDetailRecord() {
+            var bankDetails = document.getElementById("bank-details");
+            var bankDetailRecord = document.createElement("div");
+            var recordId = "bank-detail-record-" + currentBankIndex;
+            bankDetailRecord.setAttribute("id", recordId)
+            bankDetailRecord.classList.add("bank-detail-record");
+            var html = `
+                                              <div class="name-container">
+                                                      <input type="hidden" name="createBankDetails[${currentBankIndex}].BankDetailsID" />
+
+
+                            <div class="form-floating col-md-3">
+                                <input name="createBankDetails[${currentBankIndex}].BankName" class="form-control" placeholder="BankName" required data-rule-required="true" data-msg-required="Bank Name is required." />
+                                <label for="floatingInput">Bank Name</label>
+                            </div>
+                            <div class="form-floating col-md-3">
+                                <input name="createBankDetails[${currentBankIndex}].BankAddress" class="form-control" placeholder="Bank Address" required data-rule-required="true" data-msg-required="Bank Address is required." />
+                                <label>Bank Address</label>
+                            </div>
+                            <div class="form-floating col-md-3">
+                                <input name="createBankDetails[${currentBankIndex}].SwiftBIC" class="form-control" placeholder="Swift(BIC)" required  data-msg-required="Swift(BIC) is required." />
+                                <label>Swift(BIC)</label>
+
+                            </div>
+                            <div class="form-floating col-md-3">
+                                <input name="createBankDetails[${currentBankIndex}].PaymentTerm" class="form-control" placeholder="Payment Term" required data-rule-required="true" data-msg-required="Payment Term is required." />
+                                <label class="control-label">Payment Term</label>
+                            </div>
+
+                        </div>
+                        <div class="BankAddressAccountNoIban-container">
+                            <div class="form-floating col-md-3">
+                                <input name="createBankDetails[${currentBankIndex}].BeneficiaryName" class="form-control" placeholder="Beneficiary Name" required data-rule-required="true" data-msg-required="Beneficiary name is required." />
+                                <label>Beneficiary Name</label>
+                            </div>
+
+                            <div class="form-floating col-md-3">
+                                <input name="createBankDetails[${currentBankIndex}].BankAccountNo" class="form-control" placeholder="Bank Account Number" required data-rule-required="true" data-msg-required="Bank Account Number is required." />
+                                <label>Bank Account No</label>
+                            </div>
+                            <div class="form-floating col-md-3">
+                                <input name="createBankDetails[${currentBankIndex}].AccountCurrency" class="form-control" placeholder="Account Currency" required data-rule-required="true" data-msg-required="Account Currency is required." />
+                                <label>Account Currency</label>
+                            </div>
+                            <div class="form-floating col-md-3">
+                                <input name="createBankDetails[${currentBankIndex}].IBAN" class="form-control" placeholder="IBAN" required data-rule-required="true" data-msg-required="IBAN is required." />
+                                <label class="control-label">IBAN</label>
+                            </div>
+
+                               <input type="hidden" name="createBankDetails[${currentBankIndex}].IsDeleted" value="false" />
+                                    <div class="align-self-center">
+                                        <div class="text-center">
+                                        <i class="fa fa-trash-o delete-bank" style="font-size:35px;color:red" id="($"delete-bank-createBankDetails[${currentBankIndex}]")" data-bank-id="createBankDetails[${currentBankIndex}].BankDetailsID" data-bank-index="${currentBankIndex}"></i>
+                                                </div>
+                                    </div>
+                        </div>
+                                        `;
+            html = html.replace(/createBankDetails\[(.*?)\]/g, "createBankDetails[" + currentBankIndex + "]");
+            bankDetailRecord.innerHTML = html;
+            var form = document.getElementById("create-form");
+            bankDetails.appendChild(bankDetailRecord);
+            //$(`[name='createBankDetails[${currentBankIndex}].SwiftBIC']`).rules("add", {
+            //    required: true,
+            //    SwiftBIC: true,
+            //    messages: {
+            //        required: "Swift(BIC) is required.",
+            //        SwiftBIC: "Invalid Swift(BIC)format.eg:BMISEGFAXXX"
+            //    }
+            //});
+
+            $(`[name='createBankDetails[${currentBankIndex}].BankAccountNo']`).rules("add", {
+
+                required: true,
+                BankAccountNo: true,
+                messages: {
+                    required: "Bank Account Number is required.",
+                    BankAccountNo: "must be 9-25 digits."
+                }
+            });
+            // $("#create-form").validate().resetForm();
+
+            currentBankIndex++;
+        }
+        function addContactRecord() {
+            var contactDetails = document.getElementById("contact-details");
+            var contactRecord = document.createElement("div");
+            var recordId = "contact-record-" + currentIndex;
+            contactRecord.setAttribute("id", recordId)
+            contactRecord.classList.add("contact-record");
+            var html = `
+
+                                            <div class="ContactTypeName-container">
+                                                <div class="col-md-3">
+                                                         <input type="hidden" name="createContactModels[${currentIndex}].ContactID" />
+
+                                                    <div class="row">
+                                                        <label class="control-label form-label"></label>
+                                                    </div>
+                                                    <select name="createContactModels[${currentIndex}].ContactType" class="form-control form-select">
+                                                      <option value="0" selected="selected" disabled>Contact Type</option>
+                                                        ${getContactTypeOptionsHtml()}
+
+                                                    </select>
+                                                </div>
+                                                <div class="form-floating col-md-3">
+                                                    <input name="createContactModels[${currentIndex}].ContactName" class="form-control" placeholder="Contact Name" required data-rule-required="true" data-msg-required="Contact name is required." />
+                                                    <label>Contact Name</label>
+                                                    </div>
+                                                <div class="form-floating col-md-3">
+                                                    <input name="createContactModels[${currentIndex}].ContactTelNo" class="form-control" placeholder="contact tel eg: +1-202-555-0143" required data-rule-required="true" data-msg-required="Contact Telephone is required." />
+                                                    <label>Contact Tel No.</label>
+
+                                                </div>
+                                                <div class="form-floating col-md-3">
+                                                    <input name="createContactModels[${currentIndex}].EmailAddress" class="form-control" placeholder="Email eg: name@example.com" required data-rule-required="true" data-msg-required="Email is required." data-rule-email="true" data-msg-email="Please enter a valid email address." />
+                                                    <label>Email Address</label>
+                                                </div>
+                                                           <input type="hidden" name="createContactModels[${currentIndex}].IsDeleted" value="false" />
+                            <div class="align-self-center">
+                                <div class="text-center">
+                                                                  <i class="fa fa-trash-o delete-contact" style="font-size:35px;color:red" id="($"delete-contact-createContactModels[${currentIndex}]")" data-contact-id="createContactModels[${currentIndex}].ContactID" data-contact-index="${currentIndex}"></i>
+                                        </div>
+                            </div>
+                                                    </div>`;
+            contactRecord.innerHTML = html;
+            var form = document.getElementById("create-form");
+
+            contactDetails.appendChild(contactRecord);
+            contactDetails.appendChild(contactRecord);
+
+            // Add validation rules to the new form elements
+            $(`[name='createContactModels[${currentIndex}].ContactType']`).rules("add", {
+                required: true,
+                contactType: true,
+                messages: {
+                    required: "Please Select Contact type."
+                }
+            });
+
+            $(`[name='createContactModels[${currentIndex}].ContactName']`).rules("add", {
+                required: true,
+                messages: {
+                    required: "Contact name is required."
+                }
+            });
+
+            //$(`[name='createContactModels[${currentIndex}].ContactTelNo']`).rules("add", {
+            //    required: true,
+            //    phoneNumber: true,
+            //    messages: {
+            //        required: "Contact Telephone is required.",
+            //        phoneNumber: "Invalid, eg: +1-202-555-0143 "
+            //    }
+            //});
+
+            $(`[name='createContactModels[${currentIndex}].EmailAddress']`).rules("add", {
+                required: true,
+                email: true,
+                messages: {
+                    required: "Email is required.",
+                    email: "Please enter a valid email address."
+                }
+            });
+
+            // The call to resetForm() is not necessary, remove it
+            //$("#create-form").validate().resetForm();
+
+            currentIndex++;
+
+        }
+        function getContactTypeOptionsHtml() {
+            var optionsHtml = '';
+            for (var i = 0; i < contactTypeOptions.length; i++) {
+                optionsHtml += `<option value="${contactTypeOptions[i].Value}">${contactTypeOptions[i].Text}</option>`;
+            }
+            return optionsHtml;
+        }
+        function addProductionRecord() {
+            var productionDetails = document.getElementById("Production-details");
+            var productionRecord = document.createElement("div");
+            var recordId = "Production-record-" + currentProductionIndex;
+            productionRecord.setAttribute("id", recordId)
+            productionRecord.classList.add("Production-record");
+            var html = `
+
+                                                <div class="Itemcapacity-container">
+                                                 <input type="hidden" name="createProductrion[${currentProductionIndex}].ProductionInformationID" value=""/>
+
+                                                    <div class="form-floating col-md-4">
+                                                <input name="createProductrion[${currentProductionIndex}].Item" class="form-control" placeholder=" Item" required data-rule-required="true" data-msg-required="Item is required." />
+                                                <label for="floatingInput">Item</label>
+                                                    <span asp-validation-for="createProductrion[i].Item" class="text-danger"></span>
+                                                </div>
+                                                    <div class="form-floating col-md-4">
+                                                <input name="createProductrion[${currentProductionIndex}].ProductionCapacity" class="form-control"  type="number" placeholder="Production Capacity " required data-rule-required="true" data-msg-required="Production Capacity  is required." />
+                                                        <label for="floatingInput" class="d-none d-md-block">Production Capacity</label>
+                                                        <label for="floatingInput" class="d-block d-md-none">Prod. Cap.</label>
+
+
+                                                        <span asp-validation-for="createProductrion[i].ProductionCapacity" class="text-danger"></span>
+                                            </div>
+                                                    <div class="form-floating col-md-4">
+                                                <input name="createProductrion[${currentProductionIndex}].ExportCapacity" class="form-control" type="number" placeholder="Export Capacity" required data-rule-required="true" data-msg-required="Export Capacity is required." />
+                                                                <label for="floatingInput" class="d-none d-md-block">Export Capacity</label>
+                                                                <label for="floatingInput" class="d-block d-md-none">Export. Cap.</label>
+
+                                                            <span asp-validation-for="createProductrion[i].ExportCapacity" class="text-danger"></span>
+                                                                    </div>
+                                                       <input type="hidden" name="createProductrion[${currentProductionIndex}].IsDeleted" value="false" />
+                                            <div class="align-self-center">
+                                                <div class="text-center">
+                                                 <i class="fa fa-trash-o delete-production" style="font-size:35px;color:red" id="($"delete-production-createProductrion[${currentProductionIndex}]")" data-production-id="createProductrion[${currentProductionIndex}].ProductionInformationID" data-production-index="${currentProductionIndex}"></i>
+                                                        </div>
+                                            </div>
+                                                            
+                                                            
+
+                                            `;
+
+            html = html.replace(/createProductrion\[(.*?)\]/g, "createProductrion[" + (currentProductionIndex) + "]");
+            productionRecord.innerHTML = html;
+            var form = document.getElementById("create-form");
+
+            productionDetails.appendChild(productionRecord);
+            //$("#create-form").validate().resetForm();
+            currentProductionIndex++;
+        }
+
+    </script>
+    <script>
+
+                  //Bank Deleting From UI
+        $(document).on('click', '.delete-bank', function () {
+            var BankbuttonId = $(this).attr('id');
+            var bankDetailsID = $(this).data('bank-id');
+            var bankIndex = $(this).data('bank-index');
+            $('#deleteBankDetailModal').modal('show');
+
+            $('#confirmDeleteBankDetailButton').off('click').on('click', function () {
+                $(`[name="createBankDetails[${bankIndex}].IsDeleted"]`).val(true);
+                $(`#bank-detail-record-${bankIndex}`).attr('hidden', true);
+                $('#deleteBankDetailModal').modal('hide');
+
+            });
+        });
+
+                  /// Contact Deleting From UI
+        $(document).on('click', '.delete-contact', function () {
+            var buttonId = $(this).attr('id');
+            var contactId = $(this).data('contact-id');
+            var contactIndex = $(this).data('contact-index');
+            $('#deleteContactModal').modal('show');
+            $('#confirmDeleteContactButton').off('click').on('click', function () {
+                $(`[name="createContactModels[${contactIndex}].IsDeleted"]`).val(true);
+                $(`#contact-record-${contactIndex}`).attr('hidden', true);
+                $('#deleteContactModal').modal('hide');
+
+                  });
+        });
+
+                    //Producation Deleting From UI
+        $(document).on('click', '.delete-production', function () {
+            var productionbuttonId = $(this).attr('id');
+            var productionInformationID = $(this).data('production-id');
+            var productionInformationIndex = $(this).data('production-index');
+            $('#deleteProductionDetailModal').modal('show');
+
+            //$('#confirmDeleteProductionDetailButton').on('click', function () {
+            $('#confirmDeleteProductionDetailButton').off('click').on('click', function () {
+                $(`[name="createProductrion[${productionInformationIndex}].IsDeleted"]`).val(true);
+                $(`#Production-record-${productionInformationIndex}`).attr('hidden', true);
+                $('#deleteProductionDetailModal').modal('hide');
+            });
+           
+
+        });
+       
+    </script>
+  
+}

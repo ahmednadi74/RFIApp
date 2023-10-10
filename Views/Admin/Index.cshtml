@@ -1,0 +1,152 @@
+﻿@*@model PagedList.IPagedList<RFIApp.ViewModel.GetSupplierDashbord>
+*@
+@model RFIApp.ViewModel.SupplierViewModelDashbord;
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+
+}
+<br />
+@using (Html.BeginForm()) {
+    <form asp-controller="Admin" asp-action="Index">
+
+        <div class="row">
+
+            <div class="col-4 offset-4">
+
+                <div class="input-group">
+
+                    <input input asp-for="searchString" class="form-control"
+                           type="text"
+                           name="searchString"
+                           id="searchString">
+
+                    <button class="btn btn-outline-secondary">
+                        <i class="fa fa-search"></i>
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </form>
+    <br />
+    <h3 style="text-align:center">Suppliers List</h3>
+
+    <table class="table table-bordered table-responsive table-hover" id="supplierList">
+        <thead>
+            <tr>
+                <th>Supplier ID</th>
+                <th>Legal Name </th>
+                <th>Lean ID </th>
+                <th>Is Locked</th>
+                <th>Attachment</th>
+                <th style="text-align:center">
+
+                    <a id="createSupplierBtn" class="btn btn-sm btn-primary" href="#">
+                        <i class="fa fa-plus-circle" aria-hidden="true"></i>
+                        Create Supplier
+                    </a>
+                </th>
+               
+            </tr>
+        </thead>
+
+        <tbody>
+            @foreach (var supplier in Model.PaginatedSuppliers()) {
+                <tr>
+                    <td>@supplier.SupplierID</td>
+                    <td>@supplier.LegalName</td>
+                    <td>@supplier.LeanID</td>
+                    <td>@supplier.IsLocked</td>
+                    <td style="text-align:center">
+
+                        <div class="form-floating col-md-4">
+                            <a asp-controller="Supplier" asp-action="Download" asp-route-filePath="@supplier.FileAttachmentPath" asp-route-fileName="@supplier.FileAttachmentName">@supplier.FileAttachmentName</a>
+                        </div>
+
+                    </td>
+                    <td style="text-align:center">
+                        <a asp-action="EditSupplier" asp-route-SupplierID="@supplier.SupplierID" class="btn btn-sm btn-success" style="align-items:center">
+                            <i class="fa fa-pencil-square-o" aria-hidden="true"></i> Edit
+                        </a>
+                    </td>
+                    
+                    @*<td style="text-align:center">
+                        <a href="@($"{Url.Action("edit", "Supplier", new { id = supplier.SupplierID })}/?id={supplier.SupplierID}")" class="btn btn-primary">
+                            <i class="fa fa-pencil-square-o" aria-hidden="true"></i> EditData
+                        </a>
+                        
+                      
+                    </td>*@
+
+                </tr>
+            }
+        </tbody>
+    </table>
+    <div class="modal fade" id="supplierModal" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Supplier Created Successfully With ID :</h5>
+                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <h3 id="supplierIdText"></h3>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    @if (!string.IsNullOrEmpty(Model.searchString)) {
+        <div style="text-align:center">
+            <button type="button" class="btn btn-secondary ">
+                <a style="color:white" asp-controller="Admin" asp-action="Index">Return to List</a>
+            </button>
+        </div>
+    }
+    <ul class="pagination">
+        @for (int i = 1; i <= Model.PageCount(); i++) {
+            <li class="@(i == Model.CurrentPage ? "page-item active" : "page-item")">
+                <a class="page-link" href="@Url.Action("Index", new { page = i })">@i</a>
+            </li>
+        }
+    </ul>
+}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
+<script>
+    $(function () {
+        $('#createSupplierBtn').click(function (event) {
+            event.preventDefault();
+            $.get('@Url.Action("CreateSupplierPost", "Admin")', function (response) {
+                $('#supplierIdText').text(response);
+                $('#supplierModal').modal('show');
+            });
+        });
+        $('#supplierModal').on('hidden.bs.modal', function () {
+            refreshSupplierList();
+        });
+
+        function refreshSupplierList() {
+            $.ajax({
+                url: '@Url.Action("Index", "Admin")',
+                type: 'GET',
+                success: function (result) {
+                    var supplierList = $(result).find('#supplierList tbody');
+                    $('#supplierList tbody').html(supplierList.html());
+                },
+                error: function (xhr, status, error) {
+                    console.log(error);
+                }
+            });
+        }
+    });
+</script>
+

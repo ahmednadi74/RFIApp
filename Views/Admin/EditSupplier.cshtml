@@ -1,0 +1,82 @@
+﻿@model RFIApp.ViewModel.EditSupplierDashbord
+
+@{
+    ViewData["Title"] = "EditSupplier";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+
+}
+@*<h1>Edit Supplier : </h1><h2><span style="color: blue; font-weight: bold;">@Model.SupplierID</span></h2>
+*@
+
+<h3 class="fixed">
+    Edit Supplier :
+    <small class="absolute">
+        <span style="color: blue; font-weight: bold;">@Model.SupplierID</span>
+    </small>
+</h3>
+<br /><br />
+<form asp-controller="Admin" asp-action="EditSupplier" asp-route-SupplierID="@Model.SupplierID" id="EditSupplierForm">
+
+
+    <div class="form-group row g-3 list-group">
+        <input type="hidden" asp-for="SupplierID" />
+        <div class="Supplier-details border p-3">
+            <div class="name-container">
+                <div class="form-floating col-md-4">
+                    <input asp-for="LeanID" class="form-control" required data-rule-required="true" data-msg-required="Lean ID is required">
+                    <label for="floatingInput">Lean Id</label>
+                </div>
+                <div class="form-floating CustomCheck col-md-4">
+                    <div class="form-check">
+                        <input type="checkbox" asp-for="IsLocked" class="form-check-input" id="flexCheckDefault">
+                        <span asp-validation-for="IsLocked" class="text-danger"></span>
+                        <span><label asp-for="IsLocked" class="control-label"></label></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <br /><br />
+   
+    <div class="container bg-light">
+        <div class="form-buttons col-md-12 text-center">
+                <button type="submit" class="custom-Admin-submit">
+                    Submit
+                </button>
+
+            <button type="button" class="btn btn-secondary">
+             <a style="color:white" asp-controller="Admin" asp-action="Index">Return to List</a>
+           </button>
+    </div>
+    </div>
+
+</form>
+<script>
+  
+    $('form').on('submit', function (e) {
+        if ($(this).valid()) {
+            e.preventDefault();
+            var form = $(this);
+            $.ajax({
+                type: form.attr('method'),
+                url: form.attr('action'),
+                data: form.serialize(),
+                success: function (data) {
+                    if (data.success) {
+                        alert('Data submitted successfully!');
+                    }
+                    else if (data.message) {
+                        alert(data.message)
+                    }
+                    else {
+                        alert('Data submitted Is Not Valid!');
+                    }
+                }
+            });
+        }
+        else {
+            alert('Data submitted Is Not Valid!');
+        }
+    });
+
+</script>

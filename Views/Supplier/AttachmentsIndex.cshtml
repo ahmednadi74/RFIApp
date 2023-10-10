@@ -1,0 +1,12 @@
+﻿@model RFIApp.ViewModel.CreateAttachmentModel;
+
+<div class="alert alert-success">
+    <h1>Attachment uploaded </h1>
+</div>
+<div style="text-align:center">
+    @*    <a href="@Url.Action("Edit", "Supplier", new { ID =Model.SupplierID})" class="btn btn-primary">Return to your page</a>
+    <a asp-action="Edit" asp-controller="Supplier" asp-route-id="@Model.SupplierID" class="btn btn-primary">Return to your page</a>
+    *@
+    <a href="@Url.Action("Edit", "Supplier")?id=@Model.SupplierID" class="btn btn-primary">Return to your page</a>
+</div>
+

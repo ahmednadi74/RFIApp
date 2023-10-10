@@ -1,0 +1,328 @@
+﻿
+.fileds-header {
+    text-align: center
+}
+
+.custom-btn {
+    display: block;
+    margin: 0 auto;
+    height: 50px;
+    font-size: 18px;
+}
+
+.name-container {
+    display: flex;
+    align-items: end;
+    gap: 15px;
+    position: relative;
+    margin-bottom: 30px;
+}
+
+    .name-container .form-group {
+        flex: 1;
+    }
+
+.Post-container {
+    display: flex;
+    gap: 15px;
+    position: relative;
+    margin-bottom: 30px;
+}
+
+.Employee-container {
+    display: flex;
+    gap: 15px;
+    position: relative;
+    margin-bottom: 30px;
+}
+
+    .Employee-container .form-group {
+        flex: 1;
+    }
+
+.Post-container .form-group {
+    flex: 1;
+}
+
+
+.PhoneFax-container {
+    display: flex;
+    gap: 15px;
+    position: relative;
+    margin-bottom: 30px;
+}
+
+    .PhoneFax-container .form-group {
+        flex: 1;
+    }
+
+.BankAddressAccountNoIban-container {
+    display: flex;
+    margin-top: 10px;
+    gap: 15px;
+    position: relative;
+    margin-bottom: 30px;
+}
+
+.CurrencyPaymentTerm-container {
+    display: flex;
+    gap: 15px;
+}
+
+    .CurrencyPaymentTerm-container .form-group {
+        flex: 1;
+    }
+
+.BankAddressAccountNoIban-container .form-group {
+    flex: 1;
+}
+
+.contactEmailTelphone-container {
+    display: flex;
+    gap: 15px;
+}
+
+.ContactTypeName-container {
+    display: flex;
+    align-items: end;
+    gap: 15px;
+}
+
+.contactEmailTelphone-container .form-group {
+    flex: 1;
+}
+
+.Itemcapacity-container {
+    display: flex;
+    gap: 15px;
+}
+
+    .Itemcapacity-container .form-group {
+        flex: 1;
+        margin-right: 34px;
+    }
+
+.Employee-container {
+    display: flex;
+    gap: 15px;
+}
+
+    .Employee-container .form-group {
+        flex: 1;
+        margin-right: 20px;
+    }
+
+.button-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 35px;
+}
+
+.EmployeesAreSubscribed {
+    margin-top: 35px;
+}
+
+.SpanValidation {
+    box-sizing: unset
+}
+
+
+.checkbox label input[type="checkbox"] {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    height: 0;
+    width: 0;
+}
+
+.checkbox label .cr {
+    position: relative;
+    display: inline-block;
+    border: 1px solid #a9a9a9;
+    border-radius: .25em;
+    width: 1.3em;
+    height: 1.3em;
+    margin-right: .5em;
+    vertical-align: middle;
+}
+    /* Adjust the size and position of the checkbox */
+
+    .checkbox label .cr .cr-icon {
+        position: absolute;
+        font-size: .8em;
+        line-height: 0;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%) scale(0);
+        opacity: 0;
+        transition: transform .3s ease-in-out, opacity .5s ease-in-out;
+    }
+
+.checkbox label input[type="checkbox"]:checked + .cr .cr-icon {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 1;
+}
+
+label.error {
+    display: inline; /* or any other display property that isn't 'none' */
+}
+
+.form-select {
+    height: 48px !important;
+}
+
+.form-control {
+    height: 48px !important;
+}
+
+.form-floating > label {
+    padding: 10px !important;
+}
+
+#CustomLabel {
+    padding: 1px !important;
+}
+/*#custom-admin-sumbit-button {
+    background-color: green;
+    color: white
+}*/
+.btn-primary {
+    padding: 10px;
+    min-width: 200px;
+    color: #fff;
+}
+.customDownload {
+margin-left :50px;
+}
+
+h3 {
+    font-size: 1.75rem;
+    border: solid 1px;
+    background-color: lightgrey;
+}
+
+.ContactTypeName-container span {
+    position: absolute;
+}
+
+.bank-detail-record span {
+    position: absolute;
+}
+
+.Supplier-details span {
+    position: absolute;
+}
+
+.contact-record {
+    position: relative;
+    margin-bottom: 30px;
+}
+
+    .contact-record:after {
+        position: absolute;
+        content: "";
+        background-color: #000;
+        height: 1px;
+        width: 103.5%;
+        bottom: -30px
+    }
+/*.bank-detail-record {
+    position: relative;
+    margin-bottom: 30px;
+}*/
+
+.BankAddressAccountNoIban-container:after {
+    position: absolute;
+    content: "";
+    background-color: #000;
+    height: 1px;
+    width: 103.5%;
+    bottom: -30px
+}
+
+.Production-record {
+    position: relative;
+    margin-bottom: 30px;
+}
+
+    .Production-record:after {
+        position: absolute;
+        content: "";
+        background-color: #000;
+        height: 1px;
+        width: 103.5%;
+        bottom: -20px
+    }
+
+.form-floating.CustomCheck {
+    margin-top: 15px;
+    display: block;
+    min-height: 1.5rem;
+    margin-bottom: 0.125rem;
+}
+.form-buttons {
+    display: flex;
+    justify-content: flex-end;
+}
+
+button {
+    margin-left: 10px;
+}
+.custom-Admin-submit {
+    background-color: green;
+    align-items: center;
+    min-width: 100px;
+    margin: 0 auto;
+    height: 50px;
+    font-size: 18px;
+    border-color: green;
+    font-weight: bold;
+    color: white;
+}
+
+
+    .custom-Admin-submit:hover {
+        background-color: green;
+        border-color: green;
+    }
+
+.custom-submit {
+    background-color: green;
+    align-items: center;
+    min-width: 100px;
+    display: block;
+    margin: 0 auto;
+    height: 50px;
+    font-size: 18px;
+    border-color: green;
+    font-weight: bold;
+    color: white;
+}
+
+.custom-submit:hover {
+    background-color: green;
+    border-color: green;
+}
+
+@media(max-width: 768px) {
+    .Employee-container, .name-container, .BankAddressAccountNoIban-container, .name-container, .Post-container, .PhoneFax-container, .bank-detail-record, .ContactTypeName-container, .contact-record, .Production-record {
+        display: block
+    }
+}
+
+@media(max-width: 768px) {
+    .Employee-container, .name-container span, .BankAddressAccountNoIban-container span, .name-container span, .Post-container span, .PhoneFax-container span, .bank-detail-record span, .ContactTypeName-container span, .contact-record span, .Production-record span {
+        position: static;
+    }
+}
+.column {
+    float: left;
+    width: 33.33%;
+}
+
+/* Clear floats after the columns */
+.row:after {
+    content: "";
+    display: table;
+    clear: both;
+}

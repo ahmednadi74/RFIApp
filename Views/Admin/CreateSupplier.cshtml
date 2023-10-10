@@ -1,0 +1,12 @@
+﻿@model Guid
+@{
+    ViewData["Title"] = "CreateSupplier";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+@if (Model == Guid.Empty)
+{
+    <a asp-action="CreateSupplierPost" class="btn btn-sm btn-primary">
+        <i class="fa fa-plus-circle" aria-hidden="true"></i>
+        Click here to create new supplier
+    </a>
+}
