@@ -115,288 +115,322 @@ namespace RFIApp.Controllers
             return RedirectToAction("Index");
 
         }
+        [Authorize(Roles = "Admin")]
+        public IActionResult Edit( Guid ID)
+        {
+            var SupplierGuid = _context.Suppliers.Find(ID);
+            if (ID != Guid.Empty)
+            {
+                var viewModel = new SupplierViewModel
+                {
+                    BusinessTypes = Enum.GetValues(typeof(TypeOfBusiness))
+                               .Cast<TypeOfBusiness>()
+                               .Select(typeofBusiness => new SelectListItem
+                               {
+                                   Text = typeofBusiness.GetDescription(),
+                                   Value = ((int)typeofBusiness).ToString()
+                               }).ToList(),
+                };
+                var ContactType = Enum.GetValues(typeof(ContactType))
+                               .Cast<ContactType>()
+                               .Select(ContactType => new SelectListItem
+                               {
+                                   Text = ContactType.GetDescription(),
+                                   Value = ((int)ContactType).ToString()
+                               }).ToList();
+                //viewModel.createContactModels[0].TypeOfContact = ContactType;
+                viewModel.ContactTypeOptions = ContactType;
+                viewModel.IsLocked = SupplierGuid.IsLocked;
+                var SupplierData = _context.Suppliers.Find(ID);
+                if (SupplierData == null)
+                {
+                    // return RedirectToAction("Edit");
+                    return Json(new { Message = "Invalid Url " });
+                }
+                if (SupplierData.LegalName != null)
+                {
+                    viewModel.LegalName = SupplierData.LegalName;
+                    viewModel.TypeOfBusiness = SupplierData.TypeOfBusiness ?? 0;
+                    viewModel.TradingName = SupplierData.TradingName;
+                    viewModel.CompanyAddress = SupplierData.CompanyAddress;
+                    viewModel.PostalAddress = SupplierData.PostalAddress;
+                    viewModel.TelephoneNumber = SupplierData.TelephoneNumber;
+                    viewModel.WebAddress = SupplierData.WebAddress;
+                    viewModel.PostCode = SupplierData.PostCode;
+                    viewModel.FaxNumber = SupplierData.FaxNumber;
+                    viewModel.EmployeesAreSubscribedToSocialSecurity = SupplierData.EmployeesAreSubscribedToSocialSecurity;
+                    viewModel.NoOfEmployees = SupplierData.NoOfEmployees;
+                    viewModel.IsLocked = SupplierData.IsLocked;
+                    viewModel.FileAttachmentPath = SupplierData.FileAttachmentPath;
+                    viewModel.FileAttachmentName = SupplierData.FileAttachmentName;
+                }
+                //Bank
 
+                var supplierBankData = _context.BankDetails.Where(b => b.SupplierID == SupplierData.SupplierID).ToList();
+                if (supplierBankData.Count() != 0)
+                {
+                    viewModel.createBankDetails = supplierBankData
+                    .Select(b => new CreateBankDetailsModel
+                    {
+                        BankName = b.BankName,
+                        BeneficiaryName = b.BeneficiaryName,
+                        SwiftBIC = b.SwiftBIC,
+                        BankAccountNo = b.BankAccountNo,
+                        BankAddress = b.BankAddress,
+                        IBAN = b.IBAN,
+                        AccountCurrency = b.AccountCurrency,
+                        PaymentTerm = b.PaymentTerm,
+                        BankDetailsID = b.BankDetailsID,
 
-        //public IActionResult Edit([FromQuery] Guid ID) {
-        //    var SupplierGuid = _context.Suppliers.Find(ID);
-        //    if (ID != Guid.Empty) {
-        //        var viewModel = new SupplierViewModel {
-        //            BusinessTypes = Enum.GetValues(typeof(TypeOfBusiness))
-        //                       .Cast<TypeOfBusiness>()
-        //                       .Select(typeofBusiness => new SelectListItem {
-        //                           Text = typeofBusiness.GetDescription(),
-        //                           Value = ((int)typeofBusiness).ToString()
-        //                       }).ToList(),
-        //        };
-        //        var ContactType = Enum.GetValues(typeof(ContactType))
-        //                       .Cast<ContactType>()
-        //                       .Select(ContactType => new SelectListItem {
-        //                           Text = ContactType.GetDescription(),
-        //                           Value = ((int)ContactType).ToString()
-        //                       }).ToList();
-        //        //viewModel.createContactModels[0].TypeOfContact = ContactType;
-        //        viewModel.ContactTypeOptions = ContactType;
-        //        viewModel.IsLocked = SupplierGuid.IsLocked;
-        //        var SupplierData = _context.Suppliers.Find(ID);
-        //        if (SupplierData == null) {
-        //            // return RedirectToAction("Edit");
-        //            return Json(new { Message = "Invalid Url " });
-        //        }
-        //        if (SupplierData.LegalName != null) {
-        //            viewModel.LegalName = SupplierData.LegalName;
-        //            viewModel.TypeOfBusiness = SupplierData.TypeOfBusiness ?? 0;
-        //            viewModel.TradingName = SupplierData.TradingName;
-        //            viewModel.CompanyAddress = SupplierData.CompanyAddress;
-        //            viewModel.PostalAddress = SupplierData.PostalAddress;
-        //            viewModel.TelephoneNumber = SupplierData.TelephoneNumber;
-        //            viewModel.WebAddress = SupplierData.WebAddress;
-        //            viewModel.PostCode = SupplierData.PostCode;
-        //            viewModel.FaxNumber = SupplierData.FaxNumber;
-        //            viewModel.EmployeesAreSubscribedToSocialSecurity = SupplierData.EmployeesAreSubscribedToSocialSecurity;
-        //            viewModel.NoOfEmployees = SupplierData.NoOfEmployees;
-        //            viewModel.IsLocked = SupplierData.IsLocked;
-        //            viewModel.FileAttachmentPath = SupplierData.FileAttachmentPath;
-        //            viewModel.FileAttachmentName = SupplierData.FileAttachmentName;
-        //        }
-        //        //Bank
+                    }).ToList();
+                }
 
-        //        var supplierBankData = _context.BankDetails.Where(b => b.SupplierID == SupplierData.SupplierID).ToList();
-        //        if (supplierBankData.Count() != 0) {
-        //            viewModel.createBankDetails = supplierBankData
-        //            .Select(b => new CreateBankDetailsModel {
-        //                BankName = b.BankName,
-        //                BeneficiaryName = b.BeneficiaryName,
-        //                SwiftBIC = b.SwiftBIC,
-        //                BankAccountNo = b.BankAccountNo,
-        //                BankAddress = b.BankAddress,
-        //                IBAN = b.IBAN,
-        //                AccountCurrency = b.AccountCurrency,
-        //                PaymentTerm = b.PaymentTerm,
-        //                BankDetailsID = b.BankDetailsID,
+                //contact
 
-        //            }).ToList();
-        //        }
+                var supplierConatctData = _context.Contacts.Where(c => c.SupplierID == SupplierData.SupplierID).ToList();
+                if (supplierConatctData.Count() != 0)
+                {
+                    viewModel.createContactModels = supplierConatctData
+                  .Select(c => new CreateContactModel
+                  {
+                      ContactType = c.ContactType,
+                      ContactName = c.ContactName,
+                      ContactTelNo = c.ContactTelNo,
+                      EmailAddress = c.EmailAddress,
+                      ContactID = c.ContactID,
+                  }).ToList();
+                }
+                //production
+                var supplierProductrionData = _context.ProductionInformation.Where(p => p.SupplierID == SupplierData.SupplierID).ToList();
+                if (supplierProductrionData.Count() != 0)
+                {
+                    viewModel.createProductrion = supplierProductrionData
+                   .Select(p => new CreateProductrionInformationModel
+                   {
+                       ProductionCapacity = p.ProductionCapacity,
+                       ExportCapacity = p.ExportCapacity,
+                       Item = p.Item,
+                       ProductionInformationID = p.ProductionInformationID,
 
-        //        //contact
+                   }).ToList();
+                }
+                viewModel.SupplierID = ID;
+                return View(viewModel);
+            }
+            else
+            {
+                return NotFound();
+            }
+        }
 
-        //        var supplierConatctData = _context.Contacts.Where(c => c.SupplierID == SupplierData.SupplierID).ToList();
-        //        if (supplierConatctData.Count() != 0) {
-        //            viewModel.createContactModels = supplierConatctData
-        //          .Select(c => new CreateContactModel {
-        //              ContactType = c.ContactType,
-        //              ContactName = c.ContactName,
-        //              ContactTelNo = c.ContactTelNo,
-        //              EmailAddress = c.EmailAddress,
-        //              ContactID = c.ContactID,
-        //          }).ToList();
-        //        }
-        //        //production
-        //        var supplierProductrionData = _context.ProductionInformation.Where(p => p.SupplierID == SupplierData.SupplierID).ToList();
-        //        if (supplierProductrionData.Count() != 0) {
-        //            viewModel.createProductrion = supplierProductrionData
-        //           .Select(p => new CreateProductrionInformationModel {
-        //               ProductionCapacity = p.ProductionCapacity,
-        //               ExportCapacity = p.ExportCapacity,
-        //               Item = p.Item,
-        //               ProductionInformationID = p.ProductionInformationID,
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> Edit(SupplierViewModel model, IFormFile file)
+        {
+                using var transaction = _context.Database.BeginTransaction();
+                try
+                {
+                    // Save the form data to the database
+                    var supplier = new Supplier
+                    {
+                        SupplierID = model.SupplierID,
+                        LegalName = model.LegalName,
+                        TradingName = model.TradingName,
+                        CompanyAddress = model.CompanyAddress,
+                        PostalAddress = model.PostalAddress,
+                        TelephoneNumber = model.TelephoneNumber,
+                        WebAddress = model.WebAddress,
+                        PostCode = model.PostCode,
+                        FaxNumber = model.FaxNumber,
+                        TypeOfBusiness = model.TypeOfBusiness,
+                        NoOfEmployees = model.NoOfEmployees,
+                        EmployeesAreSubscribedToSocialSecurity = model.EmployeesAreSubscribedToSocialSecurity,
+                    };
+                    if (model.FileAttachment != null)
+                    {
 
-        //           }).ToList();
-        //        }
-        //        viewModel.SupplierID = ID;
-        //        return View(viewModel);
-        //    }
-        //    else {
-        //        return NotFound();
-        //    }
-        //}
+                    }
+                    // supplier.Contacts = new List<Contact>();
+                    //foreach (var item in model.createContactModels)
+                    for (int i = 0; i < model.createContactModels.Count; i++)
+                    {
+                        var item = model.createContactModels[i];
+                        if (item.ContactID == Guid.Empty)
+                        {
+                            for (int j = i + 1; j < model.createContactModels.Count; j++)
+                            {
+                                var nextItem = model.createContactModels[j];
 
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> Edit(SupplierViewModel model, IFormFile file) {
-        //    //var supplier = _context.Suppliers.Where(s=>s.SupplierID == model.SupplierID).FirstOrDefault();
-        //    //bool IsLocked = supplier.IsLocked;
-        //     // if (model.IsLocked != true) {
-        //    using var transaction = _context.Database.BeginTransaction();
-        //    try {
-        //        // Save the form data to the database
-        //        var supplier = new Supplier {
-        //            SupplierID = model.SupplierID,
-        //            LegalName = model.LegalName,
-        //            TradingName = model.TradingName,
-        //            CompanyAddress = model.CompanyAddress,
-        //            PostalAddress = model.PostalAddress,
-        //            TelephoneNumber = model.TelephoneNumber,
-        //            WebAddress = model.WebAddress,
-        //            PostCode = model.PostCode,
-        //            FaxNumber = model.FaxNumber,
-        //            TypeOfBusiness = model.TypeOfBusiness,
-        //            NoOfEmployees = model.NoOfEmployees,
-        //            EmployeesAreSubscribedToSocialSecurity = model.EmployeesAreSubscribedToSocialSecurity,
-        //        };
-        //        if (model.FileAttachment != null) {
+                                bool Isduplicated = (item.ContactType == nextItem.ContactType &&
+                                                     item.ContactTelNo == nextItem.ContactTelNo &&
+                                                     item.ContactName == nextItem.ContactName &&
+                                                     item.EmailAddress == nextItem.EmailAddress);
 
-        //        }
-        //        for (int i = 0; i < model.createContactModels.Count; i++) {
-        //            var item = model.createContactModels[i];
-        //            if (item.ContactID == Guid.Empty) {
-        //                for (int j = i + 1; j < model.createContactModels.Count; j++) {
-        //                    var nextItem = model.createContactModels[j];
+                                if (Isduplicated) { return Json(new { success = false, message = "Data submitted Is Not Valid! Contact Data Submitted duplicated!" }); }
+                            }
+                        }
+                        var existingContact = _context.Contacts.FirstOrDefault(bd => bd.ContactID == item.ContactID);
+                        bool IsExisted = _context.Contacts.Where(a => a.SupplierID == model.SupplierID && a.ContactType == item.ContactType
+                        && a.ContactName == item.ContactName && a.ContactTelNo == item.ContactTelNo && a.EmailAddress == item.EmailAddress).Any();
+                        if (existingContact == null && item.IsDeleted == false && IsExisted == false)
+                        {
+                            _context.Contacts.Add(new Contact
+                            {
+                                SupplierID = supplier.SupplierID,
+                                ContactType = item.ContactType,
+                                ContactName = item.ContactName,
+                                ContactTelNo = item.ContactTelNo,
+                                EmailAddress = item.EmailAddress,
+                            });
 
-        //                    bool Isduplicated = (item.ContactType == nextItem.ContactType &&
-        //                                         item.ContactTelNo == nextItem.ContactTelNo &&
-        //                                         item.ContactName == nextItem.ContactName &&
-        //                                         item.EmailAddress == nextItem.EmailAddress);
+                        }
+                        else if (existingContact != null && item.IsDeleted == false && IsExisted == false)
+                        {
+                            existingContact.ContactTelNo = item.ContactTelNo;
+                            existingContact.ContactType = item.ContactType;
+                            existingContact.ContactName = item.ContactName;
+                            existingContact.EmailAddress = item.EmailAddress;
+                        }
+                        else if (existingContact != null && item.IsDeleted == true)
+                        {
+                            _context.Contacts.Remove(existingContact);
+                        }
+                        //else if (existingContact == null && item.IsDeleted == false && IsExisted == true)
+                        //{
+                        //    return Json(new { success = false, message = "Data submitted Is Not Valid! Contact Data Submitted duplicated!" }); 
+                        //}
+                    }
+                    for (int i = 0; i < model.createBankDetails.Count; i++)
+                    {
+                        var bitem = model.createBankDetails[i];
+                        if (bitem.BankDetailsID == Guid.Empty)
+                        {
+                            for (int j = i + 1; j < model.createBankDetails.Count; j++)
+                            {
+                                var nextItem = model.createBankDetails[j];
 
-        //                    if (Isduplicated) { return Json(new { success = false, message = "Data submitted Is Not Valid! Contact Data Submitted duplicated!" }); }
-        //                }
-        //            }
-        //            var existingContact = _context.Contacts.FirstOrDefault(bd => bd.ContactID == item.ContactID);
-        //            bool IsExisted = _context.Contacts.Where(a => a.SupplierID == model.SupplierID && a.ContactType == item.ContactType
-        //            && a.ContactName == item.ContactName && a.ContactTelNo == item.ContactTelNo && a.EmailAddress == item.EmailAddress).Any();
-        //            if (existingContact == null && item.IsDeleted == false && IsExisted == false) {
-        //                _context.Contacts.Add(new Contact {
-        //                    SupplierID = supplier.SupplierID,
-        //                    ContactType = item.ContactType,
-        //                    ContactName = item.ContactName,
-        //                    ContactTelNo = item.ContactTelNo,
-        //                    EmailAddress = item.EmailAddress,
-        //                });
+                                bool Isduplicated = (bitem.BankName == nextItem.BankName &&
+                                                     bitem.BankAddress == nextItem.BankAddress &&
+                                                     bitem.SwiftBIC == nextItem.SwiftBIC &&
+                                                     bitem.PaymentTerm == nextItem.PaymentTerm &&
+                                                     bitem.BeneficiaryName == nextItem.BeneficiaryName &&
+                                                     bitem.BankAccountNo == nextItem.BankAccountNo &&
+                                                     bitem.AccountCurrency == nextItem.AccountCurrency &&
+                                                     bitem.IBAN == nextItem.IBAN
+                                                     );
 
-        //            }
-        //            else if (existingContact != null && item.IsDeleted == false && IsExisted == false) {
-        //                existingContact.ContactTelNo = item.ContactTelNo;
-        //                existingContact.ContactType = item.ContactType;
-        //                existingContact.ContactName = item.ContactName;
-        //                existingContact.EmailAddress = item.EmailAddress;
-        //            }
-        //            else if (existingContact != null && item.IsDeleted == true) {
-        //                _context.Contacts.Remove(existingContact);
-        //            }
-        //            //else if (existingContact == null && item.IsDeleted == false && IsExisted == true)
-        //            //{
-        //            //    return Json(new { success = false, message = "Data submitted Is Not Valid! Contact Data Submitted duplicated!" }); 
-        //            //}
-        //        }
-        //        for (int i = 0; i < model.createBankDetails.Count; i++) {
-        //            var bitem = model.createBankDetails[i];
-        //            if (bitem.BankDetailsID == Guid.Empty) {
-        //                for (int j = i + 1; j < model.createBankDetails.Count; j++) {
-        //                    var nextItem = model.createBankDetails[j];
+                                if (Isduplicated) { return Json(new { success = false, message = "Data submitted Is Not Valid! Bank  Data Submitted duplicated!" }); }
+                            }
+                        }
+                        var existingBankDetails = _context.BankDetails.FirstOrDefault(bd => bd.BankDetailsID == bitem.BankDetailsID);
+                        bool IsExisted = _context.BankDetails.Where(a => a.SupplierID == model.SupplierID && a.BankName == bitem.BankName
+                        && a.BeneficiaryName == bitem.BeneficiaryName && a.SwiftBIC == bitem.SwiftBIC && a.BankAccountNo == bitem.BankAccountNo
+                        && a.BankAddress == bitem.BankAddress && a.IBAN == bitem.IBAN && a.AccountCurrency == bitem.AccountCurrency &&
+                        a.PaymentTerm == bitem.PaymentTerm).Any();
 
-        //                    bool Isduplicated = (bitem.BankName == nextItem.BankName &&
-        //                                         bitem.BankAddress == nextItem.BankAddress &&
-        //                                         bitem.SwiftBIC == nextItem.SwiftBIC &&
-        //                                         bitem.PaymentTerm == nextItem.PaymentTerm &&
-        //                                         bitem.BeneficiaryName == nextItem.BeneficiaryName &&
-        //                                         bitem.BankAccountNo == nextItem.BankAccountNo &&
-        //                                         bitem.AccountCurrency == nextItem.AccountCurrency &&
-        //                                         bitem.IBAN == nextItem.IBAN
-        //                                         );
+                        if (existingBankDetails == null && bitem.IsDeleted == false && IsExisted == false)
+                        {
+                            _context.BankDetails.Add(new BankDetails
+                            {
 
-        //                    if (Isduplicated) { return Json(new { success = false, message = "Data submitted Is Not Valid! Bank  Data Submitted duplicated!" }); }
-        //                }
-        //            }
-        //            var existingBankDetails = _context.BankDetails.FirstOrDefault(bd => bd.BankDetailsID == bitem.BankDetailsID);
-        //            bool IsExisted = _context.BankDetails.Where(a => a.SupplierID == model.SupplierID && a.BankName == bitem.BankName
-        //            && a.BeneficiaryName == bitem.BeneficiaryName && a.SwiftBIC == bitem.SwiftBIC && a.BankAccountNo == bitem.BankAccountNo
-        //            && a.BankAddress == bitem.BankAddress && a.IBAN == bitem.IBAN && a.AccountCurrency == bitem.AccountCurrency &&
-        //            a.PaymentTerm == bitem.PaymentTerm).Any();
+                                SupplierID = supplier.SupplierID,
+                                BankName = bitem.BankName,
+                                BeneficiaryName = bitem.BeneficiaryName,
+                                SwiftBIC = bitem.SwiftBIC,
+                                BankAccountNo = bitem.BankAccountNo,
+                                BankAddress = bitem.BankAddress,
+                                IBAN = bitem.IBAN,
+                                AccountCurrency = bitem.AccountCurrency,
+                                PaymentTerm = bitem.PaymentTerm
+                            });
+                        }
+                        else if (existingBankDetails != null && bitem.IsDeleted == false && IsExisted == false)
+                        {
+                            existingBankDetails.BankName = bitem.BankName;
+                            existingBankDetails.BeneficiaryName = bitem.BeneficiaryName;
+                            existingBankDetails.SwiftBIC = bitem.SwiftBIC;
+                            existingBankDetails.BankAccountNo = bitem.BankAccountNo;
+                            existingBankDetails.BankAddress = bitem.BankAddress;
+                            existingBankDetails.IBAN = bitem.IBAN;
+                            existingBankDetails.AccountCurrency = bitem.AccountCurrency;
+                            existingBankDetails.PaymentTerm = bitem.PaymentTerm;
 
-        //            if (existingBankDetails == null && bitem.IsDeleted == false && IsExisted == false) {
-        //                _context.BankDetails.Add(new BankDetails {
+                        }
+                        else if (existingBankDetails != null && bitem.IsDeleted == true)
+                        {
+                            _context.BankDetails.Remove(existingBankDetails);
 
-        //                    SupplierID = supplier.SupplierID,
-        //                    BankName = bitem.BankName,
-        //                    BeneficiaryName = bitem.BeneficiaryName,
-        //                    SwiftBIC = bitem.SwiftBIC,
-        //                    BankAccountNo = bitem.BankAccountNo,
-        //                    BankAddress = bitem.BankAddress,
-        //                    IBAN = bitem.IBAN,
-        //                    AccountCurrency = bitem.AccountCurrency,
-        //                    PaymentTerm = bitem.PaymentTerm
-        //                });
-        //            }
-        //            else if (existingBankDetails != null && bitem.IsDeleted == false && IsExisted == false) {
-        //                existingBankDetails.BankName = bitem.BankName;
-        //                existingBankDetails.BeneficiaryName = bitem.BeneficiaryName;
-        //                existingBankDetails.SwiftBIC = bitem.SwiftBIC;
-        //                existingBankDetails.BankAccountNo = bitem.BankAccountNo;
-        //                existingBankDetails.BankAddress = bitem.BankAddress;
-        //                existingBankDetails.IBAN = bitem.IBAN;
-        //                existingBankDetails.AccountCurrency = bitem.AccountCurrency;
-        //                existingBankDetails.PaymentTerm = bitem.PaymentTerm;
+                        }
 
-        //            }
-        //            else if (existingBankDetails != null && bitem.IsDeleted == true) {
-        //                _context.BankDetails.Remove(existingBankDetails);
+                    }
+                    for (int i = 0; i < model.createProductrion.Count; i++)
+                    {
+                        var Proitem = model.createProductrion[i];
+                        if (Proitem.ProductionInformationID == Guid.Empty)
+                        {
+                            for (int j = i + 1; j < model.createProductrion.Count; j++)
+                            {
+                                var nextItem = model.createProductrion[j];
 
-        //            }
+                                bool Isduplicated = (Proitem.Item == nextItem.Item &&
+                                                     Proitem.ExportCapacity == nextItem.ExportCapacity &&
+                                                     Proitem.ProductionCapacity == nextItem.ProductionCapacity
 
-        //        }
-        //        for (int i = 0; i < model.createProductrion.Count; i++) {
-        //            var Proitem = model.createProductrion[i];
-        //            if (Proitem.ProductionInformationID == Guid.Empty) {
-        //                for (int j = i + 1; j < model.createProductrion.Count; j++) {
-        //                    var nextItem = model.createProductrion[j];
+                                                     );
 
-        //                    bool Isduplicated = (Proitem.Item == nextItem.Item &&
-        //                                         Proitem.ExportCapacity == nextItem.ExportCapacity &&
-        //                                         Proitem.ProductionCapacity == nextItem.ProductionCapacity
+                                if (Isduplicated) { return Json(new { success = false, message = "Data submitted Is Not Valid! Production  Data Submitted duplicated!" }); }
+                            }
+                        }
+                        var existingProducationInformation = _context.ProductionInformation.FirstOrDefault(p => p.ProductionInformationID == Proitem.ProductionInformationID);
+                        bool IsExisted = _context.ProductionInformation.Where(p => p.SupplierID == model.SupplierID && p.Item == Proitem.Item
+                      && p.ProductionCapacity == Proitem.ProductionCapacity && p.ExportCapacity == Proitem.ExportCapacity)
+                      .Any();
+                        if (existingProducationInformation == null && Proitem.IsDeleted == false && IsExisted == false)
+                        {
+                            _context.ProductionInformation.Add(new ProductionInformation
+                            {
+                                SupplierID = supplier.SupplierID,
+                                Item = Proitem.Item,
+                                ProductionCapacity = Proitem.ProductionCapacity,
+                                ExportCapacity = Proitem.ExportCapacity,
+                                ContactPerson = Proitem.ContactPerson,
+                                PhoneNo = Proitem.PhoneNo,
+                                EmailAddress = Proitem.EmailAddress,
+                            }
+                            );
 
-        //                                         );
+                        }
+                        else if (existingProducationInformation != null && Proitem.IsDeleted == false && IsExisted == false)
+                        {
+                            existingProducationInformation.Item = Proitem.Item;
+                            existingProducationInformation.ProductionCapacity = Proitem.ProductionCapacity;
+                            existingProducationInformation.ExportCapacity = Proitem.ExportCapacity;
+                            existingProducationInformation.PhoneNo = Proitem.PhoneNo;
+                            existingProducationInformation.ContactPerson = Proitem.ContactPerson;
+                            existingProducationInformation.EmailAddress = Proitem.EmailAddress;
+                        }
+                        else if (existingProducationInformation != null && Proitem.IsDeleted == true)
+                        {
+                            _context.ProductionInformation.Remove(existingProducationInformation);
 
-        //                    if (Isduplicated) { return Json(new { success = false, message = "Data submitted Is Not Valid! Production  Data Submitted duplicated!" }); }
-        //                }
-        //            }
-        //            var existingProducationInformation = _context.ProductionInformation.FirstOrDefault(p => p.ProductionInformationID == Proitem.ProductionInformationID);
-        //            bool IsExisted = _context.ProductionInformation.Where(p => p.SupplierID == model.SupplierID && p.Item == Proitem.Item
-        //          && p.ProductionCapacity == Proitem.ProductionCapacity && p.ExportCapacity == Proitem.ExportCapacity)
-        //          .Any();
-        //            if (existingProducationInformation == null && Proitem.IsDeleted == false && IsExisted == false) {
-        //                _context.ProductionInformation.Add(new ProductionInformation {
-        //                    SupplierID = supplier.SupplierID,
-        //                    Item = Proitem.Item,
-        //                    ProductionCapacity = Proitem.ProductionCapacity,
-        //                    ExportCapacity = Proitem.ExportCapacity,
-        //                    ContactPerson = Proitem.ContactPerson,
-        //                    PhoneNo = Proitem.PhoneNo,
-        //                    EmailAddress = Proitem.EmailAddress,
-        //                }
-        //                );
+                        }
 
-        //            }
-        //            else if (existingProducationInformation != null && Proitem.IsDeleted == false && IsExisted == false) {
-        //                existingProducationInformation.Item = Proitem.Item;
-        //                existingProducationInformation.ProductionCapacity = Proitem.ProductionCapacity;
-        //                existingProducationInformation.ExportCapacity = Proitem.ExportCapacity;
-        //                existingProducationInformation.PhoneNo = Proitem.PhoneNo;
-        //                existingProducationInformation.ContactPerson = Proitem.ContactPerson;
-        //                existingProducationInformation.EmailAddress = Proitem.EmailAddress;
-        //            }
-        //            else if (existingProducationInformation != null && Proitem.IsDeleted == true) {
-        //                _context.ProductionInformation.Remove(existingProducationInformation);
+                    }
+                    _context.Suppliers.Update(supplier);
+                    _context.SaveChanges();
+                    transaction.Commit();
+                    return Json(new { success = true });
+                }
+                catch (Exception ex)
+                {
+                    transaction.Rollback();
+                }
+                return Redirect(Url.Action("Edit", "Admin") + "?id=" + model.SupplierID);
 
-        //            }
+            }
+      
 
-        //        }
-        //        _context.Suppliers.Update(supplier);
-        //        _context.SaveChanges();
-        //        transaction.Commit();
-        //        return Json(new { success = true });
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        transaction.Rollback();
-        //    }
-          
-        //        return Redirect(Url.Action("Edit", "Supplier") + "?id=" + model.SupplierID);
-        
-        //    //}
-        //   // else {
-        //        //return Json(new { Message = "You can not edit your data please contact the Administrator" });
-        //       //  return View(model); }
-        //    //}
-        //}
 
         [AllowAnonymous]
         [HttpGet]

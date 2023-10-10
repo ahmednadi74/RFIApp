@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using RFIApp.Helper;
 using RFIApp.Models;
@@ -38,14 +39,39 @@ using (var scope = app.Services.CreateScope())
     var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
     var userManager = scope.ServiceProvider.GetRequiredService<UserManager<IdentityUser>>();
 
-    string role = "Administration";
-    if (!(await roleManager.RoleExistsAsync(role)))
+    //string role = "Administration";
+    //if (!(await roleManager.RoleExistsAsync(role)))
+    //{
+    //    await roleManager.CreateAsync(new IdentityRole(role));
+    //}
+    string[] roles = new string[]
     {
-        await roleManager.CreateAsync(new IdentityRole(role));
+    "Admin",
+    "Procurement"
+    };
+
+    foreach (var role in roles)
+    {
+        if (!await roleManager.RoleExistsAsync(role))
+        {
+            await roleManager.CreateAsync(new IdentityRole(role));
+        }
+        var user = new IdentityUser { UserName = role+"@bciholding.com" };
+        if (role == "Admin")
+        {
+            await userManager.CreateAsync(user, "Admin@Bci@2023");
+
+        }
+        else if (role == "Procurement")
+        {
+            await userManager.CreateAsync(user, "Bci@2023");
+        }
+        await userManager.AddToRoleAsync(user, role);
     }
+
 }
 // Configure the HTTP request pipeline.
-if (!app.Environment.IsDevelopment()) {
+if (app.Environment.IsDevelopment()) {
     app.UseExceptionHandler("/Home/Error");
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
@@ -53,7 +79,7 @@ if (!app.Environment.IsDevelopment()) {
 
     app.Use(async (context, next) => {
         if (context.Request.Path == "/") {
-            var httpsUrl = "http://" + context.Request.Host + "/Admin/Login";
+            var httpsUrl = "https://" + context.Request.Host + "/Admin/Login";
             context.Response.Redirect(httpsUrl);
         }
         else {
@@ -64,6 +90,7 @@ if (!app.Environment.IsDevelopment()) {
 else {
     app.UseExceptionHandler("/Home/Error");
 }
+
 app.UseStaticFiles();
 
 app.UseRouting();
@@ -74,4 +101,9 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Supplier}/{action=Edit}/{id?}");
 
+
+app.MapControllerRoute(
+
+    name: "AdminDefault",
+    pattern: "{controller=Supplier}/{action=Edit}/{id?}");
 app.Run();
